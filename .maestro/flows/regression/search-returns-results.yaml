@@ -1,0 +1,12 @@
+# Regression: Search returns results
+
+appId: ${APP_ID:-com.example.app}
+
+- launchApp
+- runFlow: ".maestro/flows/common/skip-onboarding.yaml"
+- tapOn: "Search"  # <-- Change to match your app
+- inputText: "test query"
+- pressKey: Enter
+- assertNotVisible: "No results"  # <-- or assertVisible for expected results
+- assertVisible: "Results"  # <-- Change to match your app
+- runFlow: ".maestro/flows/common/assert-no-crash-dialog.yaml"

@@ -1,0 +1,191 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# Maestro YAML Flow Reference
+# ═══════════════════════════════════════════════════════════════════════════════
+# Each flow is a YAML file starting with optional 'appId' and a list of commands.
+#
+# TOP-LEVEL OPTIONS:
+#   appId: com.example.app          # App to launch (supports ${ENV_VAR:-default})
+#   env:                            # Key-value env vars for the flow
+#     KEY: value
+#   tags: [smoke, regression]       # Tags for filtering
+#
+# COMMANDS (each is a YAML list item starting with -):
+#
+# --- App Lifecycle ---
+# - launchApp                       # Launch the app under test
+# - stopApp                         # Stop the app
+# - clearState                      # Clear app state / storage
+# - clearKeychain                   # Clear iOS keychain
+# - launchApp:
+#     clearState: true              # Launch and clear state
+#     stopApp: true                 # Stop before re-launching
+#     permissions: { all: allow }   # Set runtime permissions
+#
+# --- Tap & Interact ---
+# - tapOn:
+#     text: "Button Label"          # Tap by text (exact or contains)
+#     id: "button_id"              # Tap by accessibility id
+#     point: "50%,50%"              # Tap by coordinates
+#     image: "path/to/image.png"   # Tap by image matching
+#     below: "Other Element"        # Relative: below another element
+#     above: "Other Element"
+#     leftOf: "Other Element"
+#     rightOf: "Other Element"
+#     optional: true                # Don't fail if not found
+#     repeat: 2                     # Tap multiple times
+#     delay: 1000                   # Wait ms before tapping
+# - tapOn: "Quick text shorthand"   # Shorthand for text match
+# - doubleTapOn: "Element"          # Double tap
+# - longPressOn: "Element"          # Long press
+# - tapOn:                          # Nested boolean conditions
+#     text: "Submit"
+#     enabled: true
+#     checked: false
+#     selected: true
+#     focused: true
+#
+# --- Input ---
+# - inputText: "Hello world"        # Type into currently focused field
+# - inputText:                      # Type into specific field
+#     text: "Hello"
+#     into: "Email"                 # Field to type into
+# - inputText:
+#     text: "${TEST_EMAIL:-default@example.com}"
+#     into:
+#       id: "email_field"
+#     clearTextField: true          # Clear field first
+#
+# --- Press Keys ---
+# - pressKey: Enter                 # Enter/Return
+# - pressKey: Backspace
+# - pressKey: Escape
+# - pressKey: Tab
+# - pressKey: "="                    # Any key character
+#
+# --- Assertions ---
+# - assertVisible: "Text"           # Assert text is visible
+# - assertVisible:                  # Assert element is visible
+#     text: "Hello"
+#     id: "my_id"
+# - assertNotVisible: "Text"        # Assert element NOT visible
+# - assertVisible:
+#     text: ".*regex.*"             # Regex support
+# - assertVisible:
+#     image: "expected.png"         # Image assertion
+#
+# --- Scroll ---
+# - scroll:                         # Scroll in direction
+#     direction: DOWN               # UP, DOWN, LEFT, RIGHT
+# - scrollUntilVisible:             # Scroll until element appears
+#     element:
+#       text: "Target"
+#     direction: DOWN               # Required
+#     speed: 40                     # Scroll speed (pixels)
+#     timeout: 20000                # Max time to wait
+#     centerElement: true           # Center the element after finding
+#
+# --- Swipe ---
+# - swipe:                          # Swipe gesture
+#     direction: UP                 # UP, DOWN, LEFT, RIGHT
+#     speed: medium                 # slow, medium, fast
+# - swipe:
+#     from:
+#       id: "start_element"
+#     to:
+#       id: "end_element"
+#     duration: 1000                # ms
+# - swipe:
+#     start: "50%,80%"
+#     end: "50%,20%"
+#     duration: 500
+#
+# --- Wait ---
+# - waitForAnimationToEnd:          # Wait for animations
+#     timeout: 5000
+# - wait: 2000                      # Wait ms
+#
+# --- Navigation ---
+# - back                            # Go back
+# - back:
+#     count: 2                      # Go back N times
+# - openLink: "https://example.com" # Open URL
+# - openLink:
+#     url: "https://example.com"
+#     autoVerify: false             # Don't verify link
+#     browser: chrome                # Or safari
+#
+# --- Screenshots ---
+# - takeScreenshot: screenshot-name # Take screenshot (saved as screenshot-name.png)
+# - takeScreenshot: ${NAME}
+#
+# --- Subflows ---
+# - runFlow: "path/to/flow.yaml"    # Run another flow file
+# - runFlow:                        # With parameters
+#     file: "path/to/flow.yaml"
+#     env:
+#       MY_VAR: value
+#
+# --- Eval (JavaScript) ---
+# - evalScript: |
+#     const output = {
+#       counter: String(await element.byId("counter").getText())
+#     };
+#     output;
+#   |
+#
+# --- Conditional / Repeat ---
+# - repeat:
+#     times: 3
+#     commands:
+#       - scroll:
+#           direction: DOWN
+#       - assertNotVisible: "Load More"
+# - copyTextFrom:
+#     text: "Copied Value"
+# - pasteText
+# - setTextInput:
+#     id: "field"
+#     text: "value"
+#
+# --- Erase text ---
+# - eraseText                      # Erase all text in focused field
+# - eraseText:
+#     numberOfChars: 5             # Erase specific number of chars
+#
+# --- Platform-specific ---
+# - onAndroid:
+#     commands:
+#       - tapOn: "Android-only button"
+# - onIOS:
+#     commands:
+#       - tapOn: "iOS-only button"
+# - on tablet:                     # Also: onPhone
+#     commands:
+#       - tapOn: "Tablet button"
+#
+# --- Misc ---
+# - addMedia:
+#     type: image
+#     path: "path/to/image.png"
+# - grantPermission:
+#     all: allow
+# - startRecording                   # Screen recording
+# - stopRecording                    # Stop recording
+#
+# ═══════════════════════════════════════════════════════════════════════════════
+# ENVIRONMENT VARIABLES: Use ${VAR_NAME:-default} syntax in any string value.
+#   appId: ${APP_ID:-com.example.app}
+#
+# COMMENTS: Use # for comments in YAML files.
+#
+# BEST PRACTICES:
+#   1. Always start with - launchApp
+#   2. End with crash dialog assertion via runFlow subflow
+#   3. Use ${ENV_VAR:-default} for dynamic values (app ID, credentials, etc.)
+#   4. Use runFlow for reusable subflows (e.g., skip-onboarding, assert-no-crash)
+#   5. Use optional: true on elements that might not always be present
+#   6. Use scrollUntilVisible for elements that require scrolling
+#   7. Prefer text-based selectors over id-based for readability
+#   8. Add descriptive comments at the top of each flow
+#   9. Keep flows focused on one scenario per file
+# ═══════════════════════════════════════════════════════════════════════════════

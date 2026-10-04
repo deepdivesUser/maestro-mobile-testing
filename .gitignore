@@ -1,0 +1,29 @@
+# Maestro
+.maestro/bin/
+.maestro/lib/
+.maestro/deps/
+.maestro/tmp/
+.maestro/sessions/
+.maestro/studio/
+.maestro/analytics.json
+.maestro/promotion-state.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Env — never commit credentials
+.env*
+!.env.example
+
+# Test outputs
+test-results/
+screenshots/
+videos/
+reports/

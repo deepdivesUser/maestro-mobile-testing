@@ -1,0 +1,11 @@
+# Regression: Back navigation works correctly
+
+appId: ${APP_ID:-com.example.app}
+
+- launchApp
+- runFlow: ".maestro/flows/common/skip-onboarding.yaml"
+- tapOn: "Profile"  # <-- Change to match your app
+- assertVisible: "Profile"
+- back
+- assertVisible: "Home"  # <-- Confirm we returned
+- runFlow: ".maestro/flows/common/assert-no-crash-dialog.yaml"

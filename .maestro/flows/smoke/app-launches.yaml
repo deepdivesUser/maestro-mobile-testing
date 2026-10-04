@@ -1,0 +1,8 @@
+# Smoke: App launches and shows home screen
+
+appId: ${APP_ID:-com.example.app}
+
+- launchApp
+- assertVisible:
+    text: "Home"  # <-- Change to match your app
+- runFlow: ".maestro/flows/common/assert-no-crash-dialog.yaml"

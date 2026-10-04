@@ -1,0 +1,10 @@
+# Smoke: Can navigate to profile screen
+
+appId: ${APP_ID:-com.example.app}
+
+- launchApp
+- runFlow: ".maestro/flows/common/skip-onboarding.yaml"
+- tapOn: "Profile"  # <-- Change to match your app
+- assertVisible: "Profile"  # <-- Change to match your app
+- assertNotVisible: "Error"
+- runFlow: ".maestro/flows/common/assert-no-crash-dialog.yaml"

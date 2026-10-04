@@ -1,0 +1,29 @@
+# E2E: Full user journey — signup, onboarding, first action
+
+appId: ${APP_ID:-com.example.app}
+
+- launchApp
+- tapOn: "Sign up"  # <-- Change to match your app
+- inputText: "${TEST_EMAIL:-e2e-test@example.com}"
+- tapOn: "Password"
+- inputText: "${TEST_PASSWORD:-TestPass123!}"
+- tapOn: "Create Account"  # <-- Change to match your app
+- assertVisible: "Welcome"  # <-- Onboarding
+- tapOn: "Next"
+- tapOn: "Next"
+- tapOn: "Done"  # <-- End onboarding
+- assertVisible: "Home"
+- tapOn: "Search"
+- inputText: "maestro"
+- pressKey: Enter
+- assertNotVisible: "No results"
+- back
+- tapOn: "Profile"
+- assertVisible: "e2e-test@example.com"
+- scrollUntilVisible:
+    element:
+      text: "Log out"
+    direction: DOWN
+- tapOn: "Log out"
+- assertVisible: "Log in"
+- runFlow: ".maestro/flows/common/assert-no-crash-dialog.yaml"

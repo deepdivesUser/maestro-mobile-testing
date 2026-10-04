@@ -1,0 +1,12 @@
+# Common: Skip onboarding screens
+# Usage: runFlow: ".maestro/flows/common/skip-onboarding.yaml"
+
+- tapOn:
+    id: "skip_button"
+    optional: true
+- tapOn:
+    text: "Skip"
+    optional: true
+- tapOn:
+    text: "Get Started"
+    optional: true

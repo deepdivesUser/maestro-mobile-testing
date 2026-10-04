@@ -1,0 +1,15 @@
+# Auth: Logout
+
+appId: ${APP_ID:-com.example.app}
+
+- launchApp
+- runFlow: ".maestro/flows/common/skip-onboarding.yaml"
+# Assume user is already logged in
+- tapOn: "Profile"  # <-- Change to match your app
+- scrollUntilVisible:
+    element:
+      text: "Log out"  # <-- Change to match your app
+    direction: DOWN
+- tapOn: "Log out"
+- assertVisible: "Log in"  # <-- Confirm we're back to auth
+- runFlow: ".maestro/flows/common/assert-no-crash-dialog.yaml"

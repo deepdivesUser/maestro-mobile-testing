@@ -1,0 +1,14 @@
+# Auth: Successful login
+
+appId: ${APP_ID:-com.example.app}
+
+- launchApp
+- tapOn: "Log in"  # <-- Change to match your app
+- assertVisible: "Email"  # <-- Change to match your app
+- inputText: "${TEST_EMAIL:-test@example.com}"
+- tapOn: "Password"  # <-- Change to match your app
+- inputText: "${TEST_PASSWORD:-password123}"
+- tapOn: "Sign in"  # <-- Change to match your app
+- assertNotVisible: "Log in"
+- assertVisible: "Home"  # <-- Change to match your app
+- runFlow: ".maestro/flows/common/assert-no-crash-dialog.yaml"

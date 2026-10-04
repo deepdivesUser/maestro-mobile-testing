@@ -1,0 +1,9 @@
+# Common: Assert no crash dialog is visible
+# Usage: runFlow: ".maestro/flows/common/assert-no-crash-dialog.yaml"
+
+- assertNotVisible:
+    text: "has stopped"
+- assertNotVisible:
+    text: "Unfortunately"
+- assertNotVisible:
+    text: "Close app"

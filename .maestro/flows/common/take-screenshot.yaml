@@ -1,0 +1,5 @@
+# Common: Take a named screenshot
+# Usage: runFlow: ".maestro/flows/common/take-screenshot.yaml"
+# Requires: MAESTRO_SCREENSHOT_NAME env var
+
+- takeScreenshot: ${MAESTRO_SCREENSHOT_NAME:-screenshot}
